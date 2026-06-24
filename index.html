@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Albert Shop — App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --text: #ffffff;
+      --text-secondary: #888888;
+      --accent: #3478f6;
+      --accent-hover: #2563d4;
+      --new-badge: #3478f6;
+      --price: #ffffff;
+      --card-bg: #141414;
+      --btn-cart: #2a2a2a;
+      --btn-wish: #1e1e1e;
+      --green: #22c55e;
+      --radius: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo {
+      width: 42px;
+      height: 36px;
+      border-radius: 9px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.88), rgba(105,105,105,0.7) 40%, rgba(20,20,20,0.95) 70%),
+        #1e1e1e;
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 6px 18px rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      color: #050505;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.35);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .header-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .header-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      flex: 1;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+    .icon-btn:active { background: var(--border); }
+    .avatar-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      margin: 12px 16px;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 24% 35%, rgba(255,255,255,0.16), transparent 17%),
+        radial-gradient(circle at 8% 78%, rgba(61,95,155,0.2), transparent 22%),
+        linear-gradient(90deg, #020204 0%, #08090d 48%, #000 100%);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(180px, 0.9fr);
+      gap: 18px;
+      min-height: 250px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 48px rgba(255,255,255,0.05), 0 18px 40px rgba(0,0,0,0.35);
+    }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-width: 0;
+      position: relative;
+    }
+    .hero-left::before,
+    .hero-left::after {
+      content: "";
+      position: absolute;
+      width: 88%;
+      height: 46%;
+      border: 1px solid rgba(255,255,255,0.42);
+      border-radius: 50%;
+      transform: rotate(-16deg);
+      pointer-events: none;
+    }
+    .hero-left::after {
+      width: 82%;
+      height: 40%;
+      transform: rotate(18deg);
+      opacity: 0.55;
+    }
+    .hero-brand {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(44px, 12vw, 92px);
+      font-weight: 900;
+      letter-spacing: 0;
+      line-height: 0.82;
+      text-align: center;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 0%, #8e8e8e 35%, #222 52%, #f2f2f2 78%, #6f6f6f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 6px 1px rgba(0,0,0,0.8)) drop-shadow(0 0 12px rgba(255,255,255,0.18));
+    }
+    .hero-logo-img {
+      position: relative;
+      z-index: 1;
+      width: min(92%, 520px);
+      max-height: 205px;
+      object-fit: contain;
+      border-radius: 16px;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,0.72)) drop-shadow(0 0 18px rgba(255,255,255,0.18));
+    }
+    .hero-sub {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      padding: 4px 18px 5px;
+      background: linear-gradient(180deg, #d7d7d7, #6a6a6a);
+      color: #1b1b1b;
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .hero-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      min-width: 0;
+    }
+    .hero-cat-btn {
+      min-height: 100px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.8), transparent 34%),
+        linear-gradient(135deg, #efefea, #9f9f98);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), 0 12px 24px rgba(0,0,0,0.38);
+      transition: transform 0.15s, filter 0.15s;
+    }
+    .hero-cat-btn.kofty-card {
+      background:
+        radial-gradient(circle at 52% 50%, rgba(255,255,255,0.75), transparent 42%),
+        linear-gradient(135deg, #f1f1ec 0%, #aaa9a3 100%);
+    }
+    .hero-cat-btn img {
+      position: relative;
+      z-index: 1;
+      width: min(78%, 170px);
+      height: 62%;
+      margin-top: 30px;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 16px rgba(0,0,0,0.55));
+    }
+    .hero-cat-btn img.is-hidden {
+      display: none;
+    }
+    .hero-cat-btn::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      right: 8px;
+      font-size: clamp(22px, 5vw, 40px);
+      font-weight: 900;
+      line-height: 0.9;
+      color: rgba(0,0,0,0.82);
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .hero-cat-btn.kofty-card::before {
+      top: 5px;
+      font-size: clamp(34px, 6vw, 54px);
+      color: #030303;
+      text-shadow: 0 18px 16px rgba(0,0,0,0.45);
+    }
+    .hero-cat-btn:active { transform: scale(0.97); filter: brightness(0.92); }
+    .hero-cat-icon {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+      font-size: 42px;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.35));
+    }
+    .hero-cat-img {
+      position: relative;
+      z-index: 1;
+      width: 72%;
+      max-width: 150px;
+      height: auto;
+      margin-top: 30px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 14px rgba(0,0,0,0.55));
+    }
+    .hero-cat-img + .hero-cat-icon {
+      display: none;
+    }
+    .hero-cat-img.is-hidden + .hero-cat-icon {
+      display: inline-block;
+    }
+    .hero-cat-label {
+      position: relative;
+      z-index: 1;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #222;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .hero-left {
+        min-height: 190px;
+      }
+      .hero-right {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-cat-btn {
+        min-height: 108px;
+      }
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      padding: 4px 16px 12px;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+    }
+    .search-box svg { flex-shrink: 0; color: var(--text-secondary); }
+    .search-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+    }
+    .search-input::placeholder { color: var(--text-secondary); }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      padding: 0 16px 12px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ── CATEGORY SLIDER ── */
+    .cats-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 16px 4px;
+      scrollbar-width: none;
+    }
+    .cats-scroll::-webkit-scrollbar { display: none; }
+    .cat-card {
+      flex-shrink: 0;
+      width: 112px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #1b1b1b, #101010);
+      border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+      transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+    .cat-card:active { transform: scale(0.97); }
+    .cat-card.active {
+      border-color: rgba(255,255,255,0.75);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.35), 0 16px 30px rgba(0,0,0,0.38);
+    }
+    .cat-img-wrap {
+      height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255,255,255,0.85), rgba(255,255,255,0.08) 34%, transparent 55%),
+        linear-gradient(135deg, #ededeb, #9f9f98);
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-img-label {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .cat-img {
+      position: relative;
+      z-index: 1;
+      width: 82%;
+      height: 72%;
+      margin-top: 16px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,0.48));
+    }
+    .cat-img.is-hidden {
+      display: none;
+    }
+    .cat-img.is-hidden + .cat-emoji {
+      display: inline-block;
+    }
+    .cat-emoji {
+      position: relative;
+      z-index: 1;
+      display: none;
+      font-size: 34px;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.35));
+    }
+    .cat-name {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 8px;
+      color: var(--text);
+    }
+
+    /* ── DOTS ── */
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      padding: 10px 0 4px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.2s, width 0.2s;
+    }
+    .dot.active { background: var(--text); width: 18px; border-radius: 3px; }
+
+    /* ── ALL PRODUCTS ── */
+    .all-products {
+      padding: 20px 0 0;
+    }
+    .products-header {
+      padding: 0 16px 4px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .products-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .sort-wrap {
+      padding: 0 16px 16px;
+    }
+    .sort-select {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+      font-weight: 500;
+      width: 180px;
+    }
+    .sort-select svg { color: var(--text-secondary); }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 12px 120px;
+    }
+    .product-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .product-card:active { transform: scale(0.98); }
+
+    /* image */
+    .product-img-wrap {
+      position: relative;
+      aspect-ratio: 1/1.05;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.85), rgba(255,255,255,0.08) 34%, transparent 58%),
+        linear-gradient(145deg, #f0f0ed 0%, #aaa9a3 100%);
+      overflow: hidden;
+    }
+    .product-img-wrap::after {
+      content: "";
+      position: absolute;
+      left: 14%;
+      right: 14%;
+      bottom: 13%;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.25);
+      filter: blur(10px);
+    }
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .product-img-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 54px;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 14px 16px rgba(0,0,0,0.48));
+    }
+    .product-art-img {
+      width: 84%;
+      height: 84%;
+      object-fit: contain;
+    }
+    .product-art-img.is-hidden {
+      display: none;
+    }
+    .product-gallery {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      position: relative;
+      z-index: 1;
+    }
+    .product-gallery::-webkit-scrollbar { display: none; }
+    .product-slide {
+      min-width: 100%;
+      height: 100%;
+      scroll-snap-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-slide img {
+      width: 84%;
+      height: 84%;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 16px rgba(0,0,0,0.48));
+    }
+    .product-slide img.is-hidden {
+      display: none;
+    }
+    .slide-fallback {
+      display: none;
+      font-size: 54px;
+      filter: drop-shadow(0 14px 16px rgba(0,0,0,0.48));
+    }
+    .product-slide img.is-hidden + .slide-fallback {
+      display: block;
+    }
+    .modal-gallery {
+      width: 100%;
+      aspect-ratio: 1/1;
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,255,255,0.86), rgba(255,255,255,0.1) 36%, transparent 60%),
+        linear-gradient(145deg, #eeeeeb 0%, #9d9c96 100%);
+    }
+    .modal-gallery::-webkit-scrollbar { display: none; }
+    .modal-gallery .product-slide img {
+      width: 82%;
+      height: 82%;
+      filter: drop-shadow(0 18px 18px rgba(0,0,0,0.5));
+    }
+    .badge-new {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--new-badge);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 5px;
+      letter-spacing: 0.5px;
+    }
+    .badge-count {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 5px;
+      backdrop-filter: blur(4px);
+    }
+    /* img dots */
+    .img-dots {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 3px;
+    }
+    .img-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+    }
+    .img-dot.active { background: #fff; }
+
+    /* info */
+    .product-info {
+      padding: 10px 10px 10px;
+    }
+    .product-name {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .product-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .product-stock {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .product-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-cart {
+      flex: 1;
+      background: var(--btn-cart);
+      border: none;
+      border-radius: 9px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+    .btn-cart:active { background: #3a3a3a; }
+    .btn-wish {
+      width: 40px;
+      background: var(--btn-wish);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-wish.active { color: #ff4d6d; }
+    .btn-wish:active { background: var(--border); }
+
+    /* ── CART FAB ── */
+    .cart-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 16px;
+      width: 52px;
+      height: 52px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(52,120,246,0.45);
+      border: none;
+      color: #fff;
+      transition: transform 0.15s;
+      z-index: 200;
+    }
+    .cart-fab:active { transform: scale(0.92); }
+    .cart-count {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 18px;
+      height: 18px;
+      background: #ff4d6d;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg);
+    }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+      z-index: 150;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      padding: 4px 0;
+      transition: color 0.15s;
+    }
+    .nav-item.active { color: var(--text); }
+    .nav-label { font-size: 10px; font-weight: 600; }
+
+    /* ── PRODUCT MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-radius: 20px 20px 0 0;
+      z-index: 301;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+      max-height: 88vh;
+      overflow-y: auto;
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+    }
+    .modal.open { transform: translateY(0); }
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 12px auto 0;
+    }
+    .modal-img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      font-size: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface2);
+    }
+    .modal-img-placeholder {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,255,255,0.86), rgba(255,255,255,0.1) 36%, transparent 60%),
+        linear-gradient(145deg, #eeeeeb 0%, #9d9c96 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+    }
+    .modal-img-placeholder img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+      filter: drop-shadow(0 18px 18px rgba(0,0,0,0.5));
+    }
+    .modal-body { padding: 16px 16px 0; }
+    .modal-name { font-size: 20px; font-weight: 800; line-height: 1.2; }
+    .modal-price { font-size: 26px; font-weight: 900; margin: 8px 0 4px; }
+    .modal-stock { font-size: 13px; color: var(--green); font-weight: 500; margin-bottom: 16px; }
+    .modal-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 20px; }
+    .modal-add-btn {
+      width: 100%;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+      margin: 0 0 12px;
+    }
+    .modal-add-btn:active { background: var(--accent-hover); }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: nowrap;
+      z-index: 400;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Restore simple original-style hero/cards */
+    .hero {
+      display: flex;
+      height: 140px;
+      min-height: 0;
+      padding: 0;
+      gap: 0;
+      background: var(--surface);
+      border: 0;
+      box-shadow: none;
+    }
+    .hero-left {
+      flex: 1;
+      align-items: flex-start;
+      padding: 16px;
+    }
+    .hero-left::before,
+    .hero-left::after {
+      display: none;
+    }
+    .hero-brand {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 1px;
+      text-align: left;
+    }
+    .hero-logo-img {
+      display: none;
+    }
+    .hero-sub {
+      margin-top: 4px;
+      padding: 0;
+      background: none;
+      border: 0;
+      box-shadow: none;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .hero-right {
+      width: 170px;
+      flex-shrink: 0;
+      gap: 2px;
+      padding: 2px;
+    }
+    .hero-cat-btn,
+    .hero-cat-btn.kofty-card {
+      min-height: 0;
+      border-radius: 8px;
+      border: 0;
+      background: var(--surface2);
+      box-shadow: none;
+      padding: 6px 4px;
+      gap: 4px;
+    }
+    .hero-cat-btn::before {
+      display: none;
+    }
+    .hero-cat-btn img,
+    .hero-cat-img {
+      display: none;
+    }
+    .hero-cat-icon {
+      display: inline-block;
+      margin-top: 0;
+      font-size: 18px;
+      filter: none;
+    }
+    .hero-cat-label {
+      font-size: 9px;
+      color: var(--text);
+    }
+    .cat-card {
+      width: 96px;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .cat-img-wrap {
+      height: 80px;
+      background: var(--surface2);
+    }
+    .cat-img {
+      display: none;
+    }
+    .cat-emoji {
+      display: inline-block;
+      font-size: 30px;
+      filter: none;
+    }
+    .product-img-wrap,
+    .modal-img-placeholder {
+      background: var(--surface2);
+    }
+    .product-img-wrap::after {
+      display: none;
+    }
+    .product-art-img {
+      display: none;
+    }
+
+    /* Beautiful image design restored */
+    .header-inner > img {
+      width: 46px;
+      height: 36px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      flex-shrink: 0;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(180px, 0.9fr);
+      height: auto;
+      min-height: 250px;
+      padding: 16px;
+      gap: 18px;
+      background:
+        radial-gradient(circle at 24% 35%, rgba(255,255,255,0.16), transparent 17%),
+        radial-gradient(circle at 8% 78%, rgba(61,95,155,0.2), transparent 22%),
+        linear-gradient(90deg, #020204 0%, #08090d 48%, #000 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 48px rgba(255,255,255,0.05), 0 18px 40px rgba(0,0,0,0.35);
+    }
+    .hero-left {
+      flex: none;
+      align-items: center;
+      padding: 0;
+    }
+    .hero-left::before,
+    .hero-left::after {
+      display: block;
+    }
+    .hero-brand {
+      font-size: clamp(44px, 12vw, 92px);
+      line-height: 0.82;
+      letter-spacing: 0;
+      text-align: center;
+    }
+    .hero-sub {
+      margin-top: 14px;
+      padding: 4px 18px 5px;
+      background: linear-gradient(180deg, #d7d7d7, #6a6a6a);
+      color: #1b1b1b;
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .hero-right {
+      width: auto;
+      flex-shrink: 1;
+      gap: 14px;
+      padding: 0;
+    }
+    .hero-cat-btn,
+    .hero-cat-btn.kofty-card {
+      min-height: 100px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.55);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.8), transparent 34%),
+        linear-gradient(135deg, #efefea, #9f9f98);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), 0 12px 24px rgba(0,0,0,0.38);
+      padding: 12px 8px;
+      gap: 6px;
+    }
+    .hero-cat-btn::before {
+      display: block;
+    }
+    .hero-cat-btn img,
+    .hero-cat-img {
+      display: block;
+    }
+    .hero-cat-icon {
+      display: none;
+    }
+    .hero-cat-label {
+      font-size: 10px;
+      color: #222;
+    }
+    .cat-card {
+      width: 112px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #1b1b1b, #101010);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+    }
+    .cat-img-wrap {
+      height: 92px;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255,255,255,0.85), rgba(255,255,255,0.08) 34%, transparent 55%),
+        linear-gradient(135deg, #ededeb, #9f9f98);
+    }
+    .cat-img {
+      display: block;
+    }
+    .cat-emoji {
+      display: none;
+    }
+    .product-img-wrap,
+    .modal-img-placeholder {
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.85), rgba(255,255,255,0.08) 34%, transparent 58%),
+        linear-gradient(145deg, #f0f0ed 0%, #aaa9a3 100%);
+    }
+    .product-img-wrap::after {
+      display: block;
+    }
+    .product-art-img {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+   
+    <div class="header-title">Albert Shop</div>
+    <img src="f2eadfb4-68c8-4ba6-9a87-2849bb277e4e.jpg" alt="Albert Shop">
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleWishlist()" title="Избранное">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+      <div class="avatar-btn">R</div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-brand">Albert<br>Shop</div>
+    <div class="hero-sub">APP</div>
+  </div>
+  <div class="hero-right">
+    <button class="hero-cat-btn kofty-card" data-label="КОФТЫ" onclick="filterCat('Кофты')">
+      <img src="fc6c66a6-32cb-4501-9dfe-600d858d2f68.png" alt="Кофты" onerror="this.classList.add('is-hidden')" />
+      <span class="hero-cat-icon">🧥</span>
+      <span class="hero-cat-label">Кофты</span>
+    </button>
+    <button class="hero-cat-btn" data-label="ОБУВЬ" onclick="filterCat('Обувь')">
+      <img class="hero-cat-img" src="b3b66304-9a0f-4c68-8423-f74816610642.png" alt="Обувь" onerror="this.classList.add('is-hidden')" />
+      <span class="hero-cat-icon">👟</span>
+      <span class="hero-cat-label">Обувь</span>
+    </button>
+    <button class="hero-cat-btn" data-label="ДЖИНСЫ" onclick="filterCat('Джинсы')">
+      <img class="hero-cat-img" src="31ec3e37-242a-4931-a701-70164ae5ca72.png" alt="Джинсы" onerror="this.classList.add('is-hidden')" />
+      <span class="hero-cat-icon">👖</span>
+      <span class="hero-cat-label">Джинсы</span>
+    </button>
+    <button class="hero-cat-btn" data-label="ФУТБОЛКИ" onclick="filterCat('Футболки')">
+      <img class="hero-cat-img" src="caf4d740-22d3-4a6e-8556-47ece8af5858.png" alt="Футболки" onerror="this.classList.add('is-hidden')" />
+      <span class="hero-cat-icon">👕</span>
+      <span class="hero-cat-label">Футболки</span>
+    </button>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-input" placeholder="Поиск товаров..." id="searchInput" oninput="handleSearch()" />
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="section-title">Категории</div>
+<div class="cats-scroll" id="catScroll">
+  <!-- rendered by JS -->
+</div>
+<div class="dots" id="catDots"></div>
+
+<!-- ALL PRODUCTS -->
+<div class="all-products">
+  <div class="products-header">
+    <div class="section-title" style="padding:0">Все товары</div>
+    <div class="products-count" id="productsCount"></div>
+  </div>
+  <div class="sort-wrap">
+    <div class="sort-select" onclick="cycleSort()">
+      <span id="sortLabel">По умолчанию</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div class="product-grid" id="productGrid">
+    <!-- rendered by JS -->
+  </div>
+</div>
+
+<!-- CART FAB -->
+<button class="cart-fab" onclick="openCart()">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+  <div class="cart-count" id="cartCount">0</div>
+</button>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="setNav(this,'home')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="nav-label">Главная</span>
+  </button>
+  <button class="nav-item" onclick="setNav(this,'cats')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span class="nav-label">Категории</span>
+  </button>
+  <button class="nav-item" onclick="setNav(this,'wish')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span class="nav-label">Избранное</span>
+  </button>
+  <button class="nav-item" onclick="setNav(this,'profile')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="nav-label">Профиль</span>
+  </button>
+</nav>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+  <div class="modal-handle"></div>
+  <div id="modalContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  { id: 'Обувь',       emoji: '👟', label: 'ОБУВЬ' },
+  { id: 'Кофты',       emoji: '🧥', label: 'КОФТЫ' },
+  { id: 'Аксессуары',  emoji: '⌚', label: 'АКСЕССУАРЫ' },
+  { id: 'Джинсы',      emoji: '👖', label: 'ДЖИНСЫ' },
+  { id: 'Футболки',    emoji: '👕', label: 'ФУТБОЛКИ' },
+  { id: 'Куртки',      emoji: '🧤', label: 'КУРТКИ' },
+];
+
+const CATEGORY_IMAGES = {
+  'Кофты': 'fc6c66a6-32cb-4501-9dfe-600d858d2f68.png',
+  'Обувь': 'b3b66304-9a0f-4c68-8423-f74816610642.png',
+  'Джинсы': '31ec3e37-242a-4931-a701-70164ae5ca72.png',
+  'Футболки': 'caf4d740-22d3-4a6e-8556-47ece8af5858.png',
+  'Аксессуары': '9b04804e-0864-4ca4-aa19-6e171a661bac.png',
+  'Куртки': 'fc6c66a6-32cb-4501-9dfe-600d858d2f68.png',
+ 'mm6': 'mm6.jpg',
+ 'plm': 'plm.jpg'
+};
+
+const PRODUCTS = [
+  { id:1,  name:'Кроссовки Maison Margiela Replica «Patent Black»',  price:19990,  cat:'Обувь',      emoji:'👟', qty:1,  photos:3,  isNew:true,
+    images:['b3b66304-9a0f-4c68-8423-f74816610642.png', 'mm6.png'],
+    desc:`Оригинал
+
+Состояние: 10/10
+ (новые, полный комплект)
+
+Размер: 40-41 (26см)
+
+Комплект: полный (доп шнурки, бумага и бокс)` },
+  { id:2,  name:'Кроссовки Maison Margiela Replica «Patent Black»',     price:19990,  cat:'mm6',     emoji:'', qty:1,  photos:2, isNew:true,
+    desc:'Оригинал Состояние: 10/10 (новые, полный комплект)Размер: 40-41 (26см) Комплект: полный (доп шнурки, бумага и бокс)' },
+  { id:3,  name:'Штаны Palm Angels Rainbow', price:9999, cat:'plm',     emoji:'👖', qty:1,  photos:1,  isNew:true,
+    desc:'Оригинал. Прошли всемирную проверку Coic.Состояние: 10/10 Размер: XS факт SCLG: Отсутствует по причине того что пара выпускалась в 2019 году до внедрения системы аутентификации certilogo Замеры* Длина: 100см Полупояс: 34см Выход в застегнутом виде: 18см' },
+  
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let cart = [];
+let wishlist = new Set();
+let activecat = null;
+let sortMode = 0;
+const SORTS = ['По умолчанию', 'Сначала дешёвые', 'Сначала дорогие', 'Новинки'];
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  try { window.Telegram?.WebApp?.ready(); window.Telegram?.WebApp?.expand(); } catch(e) {}
+  renderCategories();
+  renderProducts();
+});
+
+// ── CATEGORIES ────────────────────────────────────────────────────────────────
+function renderCategories() {
+  const scroll = document.getElementById('catScroll');
+  const dots = document.getElementById('catDots');
+  scroll.innerHTML = CATEGORIES.map((c,i) => `
+    <div class="cat-card ${activecat===c.id?'active':''}" onclick="filterCat('${c.id}')" id="cat-${c.id}">
+      <div class="cat-img-wrap">
+        <span class="cat-img-label">${c.label}</span>
+        <img class="cat-img" src="${CATEGORY_IMAGES[c.id] || ''}" alt="${c.id}" onerror="this.classList.add('is-hidden')" />
+        <span class="cat-emoji">${c.emoji}</span>
+      </div>
+      <div class="cat-name">${c.id}</div>
+    </div>
+  `).join('');
+  dots.innerHTML = CATEGORIES.map((_,i) => `<div class="dot ${i===0?'active':''}"></div>`).join('');
+  scroll.addEventListener('scroll', () => {
+    const idx = Math.round(scroll.scrollLeft / 106);
+    dots.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+  });
+}
+
+function filterCat(id) {
+  activecat = activecat === id ? null : id;
+  document.querySelectorAll('.cat-card').forEach(el => {
+    el.classList.toggle('active', el.id === 'cat-' + activecat);
+  });
+  renderProducts();
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────────────────────────
+function getFiltered() {
+  const q = (document.getElementById('searchInput')?.value||'').toLowerCase();
+  let list = PRODUCTS.filter(p => {
+    const matchCat = !activecat || p.cat === activecat;
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  if (sortMode === 1) list.sort((a,b) => a.price - b.price);
+  if (sortMode === 2) list.sort((a,b) => b.price - a.price);
+  if (sortMode === 3) list = list.filter(p => p.isNew).concat(list.filter(p => !p.isNew));
+  return list;
+}
+
+function renderProducts() {
+  const list = getFiltered();
+  document.getElementById('productsCount').textContent = list.length + ' товаров';
+  document.getElementById('productGrid').innerHTML = list.map(p => `
+    <div class="product-card" onclick="openProduct(${p.id})">
+      <div class="product-img-wrap" onclick="event.stopPropagation()">
+        ${productGallery(p)}
+        ${p.isNew ? '<span class="badge-new">NEW</span>' : ''}
+        <span class="badge-count">1 / ${productPhotos(p).length}</span>
+        <div class="img-dots">
+          ${productPhotos(p).map((_,i)=>`<div class="img-dot ${i===0?'active':''}"></div>`).join('')}
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">${p.price.toLocaleString('ru-RU')}₽</div>
+        <div class="product-stock">${p.qty} шт.</div>
+        <div class="product-actions">
+          <button class="btn-cart" onclick="addToCart(event,${p.id})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </button>
+          <button class="btn-wish ${wishlist.has(p.id)?'active':''}" onclick="toggleWishProduct(event,${p.id})">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="${wishlist.has(p.id)?'#ff4d6d':'none'}" stroke="${wishlist.has(p.id)?'#ff4d6d':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function handleSearch() { renderProducts(); }
+
+function productPhotos(p) {
+  if (Array.isArray(p.images) && p.images.length) return p.images;
+  const fallback = CATEGORY_IMAGES[p.cat];
+  return fallback ? [fallback] : [];
+}
+
+function productArt(p) {
+  const photos = productPhotos(p);
+  if (!photos.length) return p.emoji;
+  return `<img class="product-art-img" src="${photos[0]}" alt="${p.name}" onerror="this.classList.add('is-hidden')" />`;
+}
+
+function productGallery(p, mode = 'card') {
+  const photos = productPhotos(p);
+  if (!photos.length) return `<div class="product-img-placeholder">${p.emoji}</div>`;
+  const cls = mode === 'modal' ? 'modal-gallery' : 'product-gallery';
+  return `
+    <div class="${cls}" onscroll="updatePhotoDots(this)">
+      ${photos.map(src => `
+        <div class="product-slide">
+          <img src="${src}" alt="${p.name}" onerror="this.classList.add('is-hidden')" />
+          <span class="slide-fallback">${p.emoji}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function updatePhotoDots(gallery) {
+  const wrap = gallery.closest('.product-img-wrap') || gallery.parentElement;
+  if (!wrap) return;
+  const total = gallery.children.length || 1;
+  const idx = Math.min(total - 1, Math.round(gallery.scrollLeft / gallery.clientWidth));
+  const count = wrap.querySelector('.badge-count');
+  if (count) count.textContent = `${idx + 1} / ${total}`;
+  wrap.querySelectorAll('.img-dot').forEach((dot, i) => dot.classList.toggle('active', i === idx));
+}
+
+function cycleSort() {
+  sortMode = (sortMode + 1) % SORTS.length;
+  document.getElementById('sortLabel').textContent = SORTS[sortMode];
+  renderProducts();
+}
+
+// ── CART ──────────────────────────────────────────────────────────────────────
+function addToCart(e, id) {
+  e.stopPropagation();
+  const p = PRODUCTS.find(x=>x.id===id);
+  const existing = cart.find(x=>x.id===id);
+  if (existing) existing.count++;
+  else cart.push({...p, count:1});
+  updateCartBadge();
+  showToast('Добавлено в корзину 🛒');
+  try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch(e) {}
+}
+
+function updateCartBadge() {
+  const total = cart.reduce((s,x)=>s+x.count,0);
+  document.getElementById('cartCount').textContent = total;
+}
+
+function openCart() {
+  if (cart.length === 0) { showToast('Корзина пуста'); return; }
+  const total = cart.reduce((s,x)=>s+x.price*x.count,0);
+  document.getElementById('modalContent').innerHTML = `
+    <div style="padding:16px">
+      <div style="font-size:20px;font-weight:800;margin-bottom:16px">Корзина</div>
+      ${cart.map(p=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="font-size:28px">${p.emoji}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600">${p.name}</div>
+            <div style="font-size:14px;font-weight:800;margin-top:3px">${p.price.toLocaleString('ru-RU')}₽</div>
+          </div>
+          <div style="color:var(--text-secondary);font-size:13px">×${p.count}</div>
+        </div>
+      `).join('')}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0 0">
+        <span style="font-size:16px;font-weight:700">Итого</span>
+        <span style="font-size:20px;font-weight:900">${total.toLocaleString('ru-RU')}₽</span>
+      </div>
+      <button class="modal-add-btn" style="margin-top:16px" onclick="checkout()">Оформить заказ</button>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function checkout() {
+  try { window.Telegram?.WebApp?.showAlert('Заказ оформлен! Менеджер свяжется с вами.'); } catch(e) {
+    showToast('Заказ оформлен! ✅');
+  }
+  cart = [];
+  updateCartBadge();
+  closeModal();
+}
+
+// ── WISHLIST ──────────────────────────────────────────────────────────────────
+function toggleWishProduct(e, id) {
+  e.stopPropagation();
+  if (wishlist.has(id)) { wishlist.delete(id); showToast('Удалено из избранного'); }
+  else { wishlist.add(id); showToast('Добавлено в избранное ❤️'); }
+  renderProducts();
+}
+
+function toggleWishlist() {
+  const favs = PRODUCTS.filter(p => wishlist.has(p.id));
+  if (favs.length === 0) { showToast('Избранное пусто'); return; }
+  document.getElementById('modalContent').innerHTML = `
+    <div style="padding:16px">
+      <div style="font-size:20px;font-weight:800;margin-bottom:16px">Избранное</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${favs.map(p=>`
+          <div class="product-card" onclick="openProduct(${p.id})">
+            <div class="product-img-wrap" style="aspect-ratio:1/1" onclick="event.stopPropagation()">
+              ${productGallery(p)}
+              <div class="badge-count">1 / ${productPhotos(p).length}</div>
+              <div class="img-dots">
+                ${productPhotos(p).map((_,i)=>`<div class="img-dot ${i===0?'active':''}"></div>`).join('')}
+              </div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-price">${p.price.toLocaleString('ru-RU')}₽</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+// ── PRODUCT MODAL ─────────────────────────────────────────────────────────────
+function openProduct(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  document.getElementById('modalContent').innerHTML = `
+    <div class="product-img-wrap" style="aspect-ratio:1/1">
+      ${productGallery(p, 'modal')}
+      <span class="badge-count">1 / ${productPhotos(p).length}</span>
+      <div class="img-dots">
+        ${productPhotos(p).map((_,i)=>`<div class="img-dot ${i===0?'active':''}"></div>`).join('')}
+      </div>
+    </div>
+    <div class="modal-body">
+      ${p.isNew ? '<span class="badge-new" style="position:relative;top:auto;left:auto;margin-bottom:10px;display:inline-block">NEW</span>' : ''}
+      <div class="modal-name">${p.name}</div>
+      <div class="modal-price">${p.price.toLocaleString('ru-RU')}₽</div>
+      <div class="modal-stock">${p.qty} шт. в наличии</div>
+      <div class="modal-desc">${p.desc}</div>
+      <button class="modal-add-btn" onclick="addToCart(event,${p.id});closeModal()">В корзину</button>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function setNav(el, tab) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (tab === 'wish') toggleWishlist();
+  if (tab === 'profile') showToast('Профиль скоро будет ✨');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
