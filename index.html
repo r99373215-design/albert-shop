@@ -49,17 +49,31 @@
       z-index: 100;
     }
     .header-title { font-size: 18px; font-weight: 800; }
-    .header-right { display: flex; align-items: center; gap: 12px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .header-icon-btn {
+      width: 34px; height: 34px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #fff; position: relative;
+    }
+    .header-icon-btn span { font-size: 16px; line-height: 1; }
+    .header-icon-btn.active { color: #ff6b81; border-color: #ff6b81; }
+    .header-badge {
+      position: absolute; top: -4px; right: -4px; width: 18px; height: 18px;
+      border-radius: 50%; background: #ff6b81; color: #fff; font-size: 10px;
+      display: flex; align-items: center; justify-content: center; pointer-events: none;
+    }
     .header-avatar {
       width: 32px; height: 32px; background: #2f80ed; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+      cursor: pointer;
     }
 
     /* ── HERO GRID ── */
     .hero-container { padding: 0 16px 16px; }
     .hero-grid {
       display: grid;
-      grid-template-columns: 1fr 1.2fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       background: #050505;
       border: 1px solid var(--border);
@@ -71,7 +85,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      border-right: 1px solid rgba(255,255,255,0.05);
+      min-height: 280px;
     }
     .hero-main-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; text-transform: uppercase; text-align: center; line-height: 1.1; }
     .hero-sub-badge { margin-top: 8px; background: #fff; color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 4px; letter-spacing: 1.5px; }
@@ -80,18 +94,26 @@
 
     .hero-cat-box {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      padding: 6px 4px 8px; text-align: center; cursor: pointer; min-height: 110px; position: relative; overflow: hidden;
+      position: relative; overflow: hidden; cursor: pointer; min-height: 220px;
+      display: flex; align-items: flex-end; justify-content: center;
     }
     .hero-cat-box img {
-      width: 100%;
-      height: 80px;
-      object-fit: cover;
-      margin-bottom: 2px;
-      transition: transform 0.2s;
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.3s ease;
     }
-    .hero-cat-box:active img { transform: scale(1.05); }
-    .hero-cat-box span { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #fff; letter-spacing: 0.5px; }
+    .hero-cat-box:hover img { transform: scale(1.05); }
+    .hero-cat-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.72));
+    }
+    .hero-cat-box span {
+      position: relative; z-index: 1;
+      font-size: 16px; font-weight: 900; text-transform: uppercase;
+      color: #fff; letter-spacing: 1px; text-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      padding: 12px 14px; background: rgba(0,0,0,0.2); border-radius: 14px;
+    }
 
     /* ── SEARCH ── */
     .search-container { padding: 0 16px 16px; }
@@ -185,12 +207,52 @@
 
     /* ── PRODUCTS GRID ── */
     .grid-container { padding: 0 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .prod-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; }
+    .prod-card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; }
     .prod-img-box { width: 100%; aspect-ratio: 1/1; background: #151515; }
     .prod-img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .prod-details { padding: 12px; }
-    .prod-title { font-size: 14px; font-weight: 600; line-height: 1.3; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 8px; }
+    .prod-details { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+    .prod-title { font-size: 14px; font-weight: 600; line-height: 1.3; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 8px; }
     .prod-price { font-size: 16px; font-weight: 800; color: #fff; }
+    .prod-actions { display: flex; gap: 8px; margin-top: auto; }
+    .prod-actions button,
+    .prod-heart-btn {
+      border: 1px solid var(--border); border-radius: 14px; background: var(--surface2); color: #fff;
+      cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    }
+    .prod-actions button {
+      flex: 1; padding: 12px 10px; font-weight: 700; font-size: 13px; text-transform: uppercase;
+      letter-spacing: 0.5px; display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 10px 18px rgba(0,0,0,0.12);
+    }
+    .prod-actions button:hover {
+      transform: translateY(-1px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 14px 24px rgba(0,0,0,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    }
+    .prod-heart-btn {
+      width: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; padding: 0; border-radius: 14px; background: rgba(255,255,255,0.06);
+    }
+    .prod-heart-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.12);
+    }
+    .prod-heart-btn.active {
+      color: #ff6b81; border-color: #ff6b81; background: rgba(255,107,129,0.14);
+    }
+
+    .profile-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 16px 12px; font-size: 16px; font-weight: 800; }
+    .favorites-count-badge { background: #ff6b81; color: #fff; font-size: 12px; padding: 4px 8px; border-radius: 999px; }
+    .favorites-list { display: grid; gap: 12px; padding: 0 16px 16px; }
+    .favorite-card {
+      display: flex; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px;
+      cursor: pointer;
+    }
+    .favorite-card img { width: 58px; height: 58px; border-radius: 12px; object-fit: cover; }
+    .favorite-card-info { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .favorite-card-info .prod-title { margin: 0; font-size: 14px; line-height: 1.2; }
+    .favorite-card-price { font-size: 13px; font-weight: 700; color: #fff; }
 
     /* ── PRODUCT DETAILS ── */
     .back-nav { display: flex; align-items: center; gap: 8px; padding: 16px; cursor: pointer; font-weight: 600; color: var(--text-secondary); }
@@ -428,31 +490,21 @@
   <div id="screenCatalog" class="screen active">
     <header class="header">
       <div class="header-title">Albert Shop</div>
-      <div class="header-right"><div class="header-avatar" onclick="navigateTo('screenProfile')" style="cursor:pointer;">R</div></div>
+      <div class="header-right">
+        <div class="header-actions">
+          <div class="header-icon-btn" id="headerFavoritesBtn" onclick="navigateTo('screenProfile')">
+            <span>♥</span>
+            <div class="header-badge" id="favoritesBadge" style="display:none;">0</div>
+          </div>
+        </div>
+        <div class="header-avatar" onclick="navigateTo('screenProfile')">R</div>
+      </div>
     </header>
 
     <div class="hero-container">
       <div class="hero-grid">
         <div class="hero-left">
-          <img src="logo.jpg" alt="Albert Shop" style="width:100%; height:100%; object-fit:contain; border-radius:8px;">
-        </div>
-        <div class="hero-right-grid">
-          <div class="hero-cat-box" onclick="setCategory('Кофты')">
-            <img src="fc6c66a6-32cb-4501-9dfe-600d858d2f68.png" alt="Кофты">
-            <span>Кофты</span>
-          </div>
-          <div class="hero-cat-box" onclick="setCategory('Обувь')">
-            <img src="b3b66304-9a0f-4c68-8423-f74816610642.png" alt="Обувь">
-            <span>Обувь</span>
-          </div>
-          <div class="hero-cat-box" onclick="setCategory('Джинсы')">
-            <img src="31ec3e37-242a-4931-a701-70164ae5ca72.png" alt="Джинсы">
-            <span>Джинсы</span>
-          </div>
-          <div class="hero-cat-box" onclick="setCategory('Футболки')">
-            <img src="caf4d740-22d3-4a6e-8556-47ece8af5858.png" alt="Футболки">
-            <span>Футболки</span>
-          </div>
+          <img src="logo.jpg" alt="Albert Shop" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
         </div>
       </div>
     </div>
@@ -619,6 +671,12 @@
       ⏳ Есть активные заказы
     </div>
 
+    <div class="profile-section-head">
+      <span>Избранное</span>
+      <span class="favorites-count-badge" id="profileFavoritesCount" style="display:none;">0</span>
+    </div>
+    <div id="profileFavoritesList" class="favorites-list"></div>
+
     <div class="orders-section-head">
       <span>Мои заказы</span>
       <span class="orders-count-badge" id="ordersCountBadge">0 заказов</span>
@@ -687,15 +745,95 @@
     let activeCategory = "Все";
     let searchString = "";
     let shoppingCart = {};
+    let favorites = new Set();
     let currentViewingProduct = null;
     let selectedSize = "";
     let activeSlidePos = 0;
 
+    function getTelegramUser() {
+      return window.Telegram?.WebApp?.initDataUnsafe?.user || {};
+    }
+
+    function updateHeaderUser() {
+      const tg = getTelegramUser();
+      const firstName = tg.first_name || 'Альберт';
+      const lastName = tg.last_name || '';
+      const initials = (firstName[0] + (lastName[0] || '')).toUpperCase();
+      const headerInitial = initials.charAt(0) || firstName.charAt(0) || 'A';
+      const headerAvatar = document.querySelector('.header-avatar');
+      if (headerAvatar) headerAvatar.innerText = headerInitial;
+      const avatarBig = document.getElementById('profileAvatarBig');
+      if (avatarBig) avatarBig.innerText = initials;
+    }
+
+    function syncFavoriteIndicators() {
+      const total = favorites.size;
+      const badge = document.getElementById('favoritesBadge');
+      const countBadge = document.getElementById('profileFavoritesCount');
+      if (badge) {
+        badge.innerText = total;
+        badge.style.display = total > 0 ? 'flex' : 'none';
+      }
+      if (countBadge) {
+        countBadge.innerText = total;
+        countBadge.style.display = total > 0 ? 'inline-flex' : 'none';
+      }
+    }
+
+    function renderFavoriteSection() {
+      const container = document.getElementById('profileFavoritesList');
+      if (!container) return;
+      const favProducts = PRODUCTS.filter(p => favorites.has(p.id));
+      if (favProducts.length === 0) {
+        container.innerHTML = '<div class="profile-empty">Нет товаров в избранном</div>';
+        return;
+      }
+      container.innerHTML = '';
+      favProducts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'favorite-card';
+        card.onclick = () => viewProductDetails(p.id);
+        card.innerHTML = `
+          <img src="${p.images[0]}" alt="${p.name}">
+          <div class="favorite-card-info">
+            <div class="prod-title">${p.name}</div>
+            <div class="favorite-card-price">${p.price} ₽</div>
+          </div>
+          <button class="prod-heart-btn active" onclick="event.stopPropagation(); toggleFavorite(${p.id})">♥</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleFavorite(id) {
+      if (favorites.has(id)) favorites.delete(id);
+      else favorites.add(id);
+      renderItemsGrid();
+      renderFavoriteSection();
+      syncFavoriteIndicators();
+      const product = PRODUCTS.find(p => p.id === id);
+      showToast(product ? (favorites.has(id) ? 'Добавлено в избранное' : 'Удалено из избранного') : 'Изменено избранное', true);
+    }
+
+    function addProductToCart(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+      const size = product.sizes[0] || '';
+      const key = `${product.id}_${size}`;
+      if (shoppingCart[key]) shoppingCart[key].qty++;
+      else shoppingCart[key] = { product, size, qty: 1 };
+      syncCartIndicators();
+      showToast('Добавлено в корзину!', true);
+    }
+
     // ── INIT ──
     function init() {
+      updateHeaderUser();
       renderCategoryList();
       renderItemsGrid();
+      renderFavoriteSection();
       syncCartIndicators();
+      syncFavoriteIndicators();
     }
 
     // ── NAVIGATION ──
@@ -771,8 +909,14 @@
           card.innerHTML = `
             <div class="prod-img-box"><img src="${p.images[0]}" alt="${p.name}"></div>
             <div class="prod-details">
-              <div class="prod-title">${p.name}</div>
-              <div class="prod-price">${p.price} ₽</div>
+              <div>
+                <div class="prod-title">${p.name}</div>
+                <div class="prod-price">${p.price} ₽</div>
+              </div>
+              <div class="prod-actions">
+                <button onclick="event.stopPropagation(); addProductToCart(${p.id})">В корзину</button>
+                <button class="prod-heart-btn ${favorites.has(p.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${p.id})">♥</button>
+              </div>
             </div>`;
           grid.appendChild(card);
         });
@@ -1011,6 +1155,9 @@
 
       const hasActive = savedOrders.some(o => o.status.includes('Ожидает оплаты') || o.status.includes('Ожидает подтверждения'));
       document.getElementById('profileActiveBadge').style.display = hasActive ? 'flex' : 'none';
+      renderFavoriteSection();
+      syncFavoriteIndicators();
+      updateHeaderUser();
 
       const count = savedOrders.length;
       document.getElementById('ordersCountBadge').innerText = count + ' ' + (count === 1 ? 'заказ' : count < 5 ? 'заказа' : 'заказов');
