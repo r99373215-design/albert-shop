@@ -44,11 +44,11 @@
     .cat-slider-arrow{flex-shrink:0;width:32px;height:32px;background:var(--surface);border:1px solid var(--border);border-radius:50%;color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;position:relative;z-index:2;}
     .cat-row{display:flex;gap:8px;scroll-behavior:smooth;scrollbar-width:none;flex:1;min-width:0;overflow-x:auto;}
     .cat-row::-webkit-scrollbar{display:none;}
-.cat-item{flex-shrink:0;width:60px;background:var(--surface);border:0px solid var(--border);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer;overflow:hidden;padding-bottom:0px;transition:border-color 0.2s;}
-.cat-item.active{border-color:#fff;}
-    .cat-item img{width:100%;height:60px;object-fit:cover;}
+    .cat-item{flex-shrink:0;width:60px;height:80px;background:var(--surface);border:0px solid var(--border);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer;overflow:hidden;padding-bottom:0px;transition:border-color 0.2s;}
+    .cat-item.active{border-color:#fff;}
+    .cat-item img{width:100%;height:60px;object-fit:cover;flex-shrink:0;}
     .cat-item-no-img{width:100%;height:0%;display:grid;align-items:center;justify-content:center;font-size:24px;margin-bottom:5px;}
-    .cat-item-title{font-size:8px;font-weight:700;text-transform:uppercase;color:#fff;text-align:center;padding:3px 2px;letter-spacing:0.2px;}
+    .cat-item-title{font-size:8px;font-weight:700;text-transform:uppercase;color:#fff;text-align:center;padding:3px 2px;letter-spacing:0.2px;flex-shrink:0;}
 
     /* PRODUCTS GRID */
     .grid-container{padding:0 16px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
@@ -186,7 +186,6 @@
     .fav-empty{text-align:center;padding:60px 16px;color:var(--text-secondary);}
     .fav-empty-icon{font-size:46px;margin-bottom:10px;}
     .fav-empty-text{font-size:15px;font-weight:700;color:#fff;margin-bottom:5px;}
-    
 
     /* ADMIN */
     .admin-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 16px;}
@@ -290,6 +289,10 @@
 
     <div class="section-head">Все товары</div>
     <div class="grid-container" id="productsGrid"></div>
+
+    <div style="text-align:center;padding:28px 16px 16px;color:#333;font-size:11px;font-weight:600;letter-spacing:0.3px;">
+      Бот создан Rodion · <a href="https://t.me/rodi3825" target="_blank" style="color:#444;text-decoration:none;">@rodi3825</a>
+    </div>
 
     <button class="fab-cart" onclick="navigateTo('screenCart')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -488,9 +491,8 @@
     ];
     function saveProducts() { localStorage.setItem('shopProducts', JSON.stringify(PRODUCTS)); }
 
-   
     const CATEGORIES_LIST = [
-      {   name:"Все", image:"vse1.jpg", style:"object-fit:cover;height:100%;" },
+      { name:"Все", image:"vse1.jpg", style:"object-fit:cover;height:100%;" },
       { name:"Кофты", image:"fc6c66a6-32cb-4501-9dfe-600d858d2f68.png", style:"object-fit:cover;height:120%;" },
       { name:"Обувь", image:"b3b66304-9a0f-4c68-8423-f74816610642.png", style:"object-fit:cover;height:100%;" },
       { name:"Джинсы", image:"31ec3e37-242a-4931-a701-70164ae5ca72.png", style:"object-fit:cover;height:100%;" },
@@ -573,8 +575,7 @@
       const maxLeft = row.scrollWidth - row.clientWidth;
       const curLeft = row.scrollLeft;
       const nextLeft = Math.max(0, Math.min(maxLeft, curLeft + d * 200));
-      if (nextLeft === curLeft) return; // hit edge: block further movement
-
+      if (nextLeft === curLeft) return;
       catScrollLocked = true;
       row.scrollTo({ left: nextLeft, behavior: 'smooth' });
       setTimeout(() => { catScrollLocked = false; }, 320);
